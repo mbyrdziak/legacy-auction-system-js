@@ -54,7 +54,30 @@ var Auction = function(context, name, startTime, endTime, type, startingPrice, b
 
         status = AuctionStatus.ACTIVE;
         activateDate = context.getNow();
-    }
+    };
+
+    this.buyNow = function() {
+        if (type != AuctionType.BUY_NOW || status != AuctionStatus.ACTIVE) {
+            throw "Wrong type or status"
+        } else if (owner != context.getUser()) {
+            throw "Not an owner";
+        }
+
+        bids.push(new Bid(this, buyNowPrice, context.getUser(), context.getNow()));
+        this.finish();
+    };
+
+    this.finish = function() {
+        if (status != AuctionStatus.ACTIVE) {
+            throw "Auction has to be Active";
+        }
+
+        if (type == AuctionType.BID && endTime.getTime() < context.getNow().getTime()) {
+            throw "Auction has to be after its finish time";
+        }
+
+        status = AuctionStatus.FINISHED;
+    };
 
     /**
      * @returns {Array.<Bid>}
