@@ -30,7 +30,28 @@ var Auction = function(context, name, startTime, endTime, type, startingPrice, b
      */
     var activateDate;
 
+    if (startTime.getTime() < context.getNow()) {
+        throw "StartTime must be from future";
+    }
+
+    if (endTime.getTime() < context.getNow()) {
+        throw "EndTime is not from future!!!";
+    }
+
+    if (endTime.getTime() < startTime.getTime()) {
+        throw "request.StartTime must be before request.EndTime";
+    }
+
     this.activate = function() {
+
+        if (status != AuctionStatus.NEW) {
+            throw "Current status is not NEW";
+        }
+
+        if (startTime > context.getNow()) {
+            throw "Given time must be from past";
+        }
+
         status = AuctionStatus.ACTIVE;
         activateDate = context.getNow();
     }

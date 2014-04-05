@@ -49,7 +49,8 @@ describe("AuctionTest", function() {
         var auction = new Auction(context, null, startTime, endTime, AuctionType.BID, 1000, 1000);
         repo.persist(auction);
 
-        var now = new Date();
+        var now = new Date(startTime);
+        now.setSeconds(now.getSeconds() + 1);
         context.setNow(now);
 
         auction.activate();
